@@ -1,0 +1,322 @@
+npx create-next-app@latest admin-dashboard
+cd admin-dashboard
+npm install @nextui-org/react shadcn/ui
+/components
+    /UserManagement
+        AddUser.js
+        EditUser.js
+        UserList.js
+    /Analytics
+        Analytics.js
+    /Notifications
+        Notifications.js
+    /Settings
+        Settings.js
+    /TaskManagement
+        AddTask.js
+        EditTask.js
+        TaskList.js
+    /Filter
+        Filter.js
+    SendNotificationButton.js
+/pages
+    index.js
+    _app.js
+    _document.js
+import { useState } from 'react';
+import { Input, Button } from '@nextui-org/react';
+
+const AddUser = ({ onAdd }) => {
+  const [name, setName] = useState('');
+
+  const handleAdd = () => {
+    onAdd({ name });
+    setName('');
+  };
+
+  return (
+    <div>
+      <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+      <Button onClick={handleAdd}>Add User</Button>
+    </div>
+  );
+};
+
+export default AddUser;
+import { useState } from 'react';
+import { Input, Button } from '@nextui-org/react';
+
+const EditUser = ({ user, onSave }) => {
+  const [name, setName] = useState(user.name);
+
+  const handleSave = () => {
+    onSave({ ...user, name });
+  };
+
+  return (
+    <div>
+      <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+      <Button onClick={handleSave}>Save Changes</Button>
+    </div>
+  );
+};
+
+export default EditUser;
+const UserList = ({ users, onEdit, onDelete }) => (
+  <div>
+    {users.map((user) => (
+      <div key={user.id}>
+        <span>{user.name}</span>
+        <Button onClick={() => onEdit(user)}>Edit</Button>
+        <Button onClick={() => onDelete(user.id)}>Delete</Button>
+      </div>
+    ))}
+  </div>
+);
+
+export default UserList;
+const Analytics = ({ userCount, activeUsers, revenue }) => (
+  <div>
+    <h3>Analytics</h3>
+    <p>User Count: {userCount}</p>
+    <p>Active Users: {activeUsers}</p>
+    <p>Revenue: ${revenue}</p>
+  </div>
+);
+
+export default Analytics;
+const Notifications = ({ notifications }) => (
+  <div>
+    <h3>Notifications</h3>
+    {notifications.map((notification, index) => (
+      <div key={index}>{notification}</div>
+    ))}
+  </div>
+);
+
+export default Notifications;
+import { useState } from 'react';
+import { Input, Button } from '@nextui-org/react';
+
+const Settings = ({ onSave }) => {
+  const [setting, setSetting] = useState('');
+
+  const handleSave = () => {
+    onSave({ setting });
+  };
+
+  return (
+    <div>
+      <Input value={setting} onChange={(e) => setSetting(e.target.value)} placeholder="Setting" />
+      <Button onClick={handleSave}>Save Settings</Button>
+    </div>
+  );
+};
+
+export default Settings;
+import { useState } from 'react';
+import { Input, Button } from '@nextui-org/react';
+
+const AddTask = ({ onAdd }) => {
+  const [task, setTask] = useState('');
+
+  const handleAdd = () => {
+    onAdd({ task });
+    setTask('');
+  };
+
+  return (
+    <div>
+      <Input value={task} onChange={(e) => setTask(e.target.value)} placeholder="Task" />
+      <Button onClick={handleAdd}>Add Task</Button>
+    </div>
+  );
+};
+
+export default AddTask;
+import { useState } from 'react';
+import { Input, Button } from '@nextui-org/react';
+
+const EditTask = ({ task, onSave }) => {
+  const [taskDetail, setTaskDetail] = useState(task.task);
+
+  const handleSave = () => {
+    onSave({ ...task, task: taskDetail });
+  };
+
+  return (
+    <div>
+      <Input value={taskDetail} onChange={(e) => setTaskDetail(e.target.value)} placeholder="Task" />
+      <Button onClick={handleSave}>Save Changes</Button>
+    </div>
+  );
+};
+
+export default EditTask;
+const TaskList = ({ tasks, onEdit, onDelete }) => (
+  <div>
+    {tasks.map((task) => (
+      <div key={task.id}>
+        <span>{task.task}</span>
+        <Button onClick={() => onEdit(task)}>Edit</Button>
+        <Button onClick={() => onDelete(task.id)}>Delete</Button>
+      </div>
+    ))}
+  </div>
+);
+
+export default TaskList;
+import { useState } from 'react';
+import { Input, Button } from '@nextui-org/react';
+
+const Filter = ({ onFilter }) => {
+  const [criteria, setCriteria] = useState('');
+
+  const handleFilter = () => {
+    onFilter(criteria);
+  };
+
+  return (
+    <div>
+      <Input value={criteria} onChange={(e) => setCriteria(e.target.value)} placeholder="Filter Criteria" />
+      <Button onClick={handleFilter}>Filter</Button>
+    </div>
+  );
+};
+
+export default Filter;
+npm install next-pwa
+const withPWA = require('next-pwa')({
+  dest: 'public'
+});
+
+module.exports = withPWA({
+  // next.js config
+});
+{
+  "name": "Admin Dashboard",
+  "short_name": "Dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+
+class MyDocument extends Document {
+  render() {
+    return (
+      <Html>
+        <Head>
+          <link rel="manifest" href="/manifest.json" />
+          <meta name="theme-color" content="#000000" />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+
+export default MyDocument;
+const SendNotificationButton = () => {
+  const sendNotification = () => {
+    if (Notification.permission === 'granted') {
+      new Notification('Demo Notification', {
+        body: 'This is a test notification!',
+      });
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          new Notification('Demo Notification', {
+            body: 'This is a test notification!',
+          });
+        }
+      });
+    }
+  };
+
+  return <Button onClick={sendNotification}>Send Notification</Button>;
+};
+
+export default SendNotificationButton;
+import { useState } from 'react';
+import AddUser from '../components/UserManagement/AddUser';
+import UserList from '../components/UserManagement/UserList';
+import Analytics from '../components/Analytics/Analytics';
+import Notifications from '../components/Notifications/Notifications';
+import Settings from '../components/Settings/Settings';
+import AddTask from '../components/TaskManagement/AddTask';
+import TaskList from '../components/TaskManagement/TaskList';
+import Filter from '../components/Filter/Filter';
+import SendNotificationButton from '../components/SendNotificationButton';
+
+export default function Home() {
+  const [users, setUsers] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [userCount, setUserCount] = useState(0);
+  const [activeUsers, setActiveUsers] = useState(0);
+  const [revenue, setRevenue] = useState(0);
+
+  const handleAddUser = (user) => {
+    setUsers([...users, { ...user, id: users.length + 1 }]);
+    setUserCount(users.length + 1);
+  };
+
+  const handleEditUser = (editedUser) => {
+    setUsers(users.map(user => user.id === editedUser.id ? editedUser : user));
+  };
+
+  const handleDeleteUser = (id) => {
+    setUsers(users.filter(user => user.id !== id));
+    setUserCount(users.length - 1);
+  };
+
+  const handleAddTask = (task) => {
+    setTasks([...tasks, { ...task, id: tasks.length + 1 }]);
+  };
+
+  const handleEditTask = (editedTask) => {
+    setTasks(tasks.map(task => task.id === editedTask.id ? editedTask : task));
+  };
+
+  const handleDeleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
+  const handleFilter = (criteria) => {
+    // Implement filter logic
+  };
+
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+      <Analytics userCount={userCount} activeUsers={activeUsers} revenue={revenue} />
+      <Notifications notifications={notifications} />
+      <Settings onSave={(setting) => console.log(setting)} />
+      <AddUser onAdd={handleAddUser} />
+      <UserList users={users} onEdit={handleEditUser} onDelete={handleDeleteUser} />
+      <AddTask onAdd={handleAddTask} />
+      <TaskList tasks={tasks} onEdit={handleEditTask} onDelete={handleDeleteTask} />
+      <Filter onFilter={handleFilter} />
+      <SendNotificationButton />
+    </div>
+  );
+}
+cd path/to/your/admin-dashboard
+npm run dev
